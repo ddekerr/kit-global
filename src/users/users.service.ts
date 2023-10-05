@@ -9,13 +9,22 @@ import { CreateUserDto } from './dto/create-user.dto';
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
-  getUserByEMail(email: string): Promise<User> {
-    const user = this.userModel.findOne({ email });
+  async getUserByEMail(email: string): Promise<User> {
+    const user = await this.userModel.findOne({ email });
     return user;
   }
 
-  async createUser(dto: CreateUserDto): Promise<User> {
-    const user = this.userModel.create(dto);
+  async createUser(dto: User): Promise<User> {
+    console.log(dto);
+    const user = await this.userModel.create(dto);
     return user;
+  }
+
+  async removeToken(email: string): Promise<void> {
+    await this.userModel.findOneAndUpdate({ email }, { token: null });
+  }
+
+  async addToken(email: string, token: string): Promise<void> {
+    await this.userModel.findOneAndUpdate({ email }, { token });
   }
 }
