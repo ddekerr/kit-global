@@ -13,5 +13,6 @@ import { User, UserSchema } from './user.schema';
     JwtModule.register({}),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
+  exports: [UsersService],
 })
 export class UsersModule {}
