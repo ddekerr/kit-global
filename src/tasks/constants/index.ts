@@ -1,1 +1,2 @@
-export const STATUS_LIST = ['New', 'In progres', 'Done'];
+export const STATUS_LIST = ['new', 'in progres', 'done'];
+export const FILTERS = ['project', 'status', 'date'];
