@@ -51,14 +51,12 @@ export class TasksService {
 
   // ############ CHANGE STATUS ############
   async changeTaskStatus(_id: ObjectId, status: string): Promise<Task> {
-    const task = await this.taskModel.findOneAndRemove({ _id });
+    const task = await this.updateTaskById(_id, { status });
 
     if (!task) {
-      throw new BadRequestException('Wrong task ID or status');
+      throw new BadRequestException('Wrong task status');
     }
 
-    task.status = status;
-    await task.save();
     return task;
   }
 
