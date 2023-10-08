@@ -1,4 +1,4 @@
-# HKit Global API
+# Kit Global API
 
 This project was created using:
 
