@@ -70,6 +70,25 @@ export class TasksController {
     return this.tasksService.removeTaskById(id);
   }
 
+  // ############ CHANGE STATUS ############
+  @Patch(':id/status/:status')
+  @ApiAcceptedResponse({
+    description: 'Status has been successfully changed.',
+    type: Task,
+  })
+  @ApiBadRequestResponse({
+    description: 'Wrong data or status',
+    type: ErrorType,
+  })
+  @ApiParam({ name: 'id', type: 'ObjectId', description: 'Task ID' })
+  @ApiParam({ name: 'status', type: 'string', description: 'task status' })
+  changeStatus(
+    @Param('id') id: ObjectId,
+    @Param('status') status: string,
+  ): Promise<Task> {
+    return this.tasksService.changeTaskStatus(id, status);
+  }
+
   // ############ GET ONE ############
   @Get(':id')
   @ApiAcceptedResponse({
