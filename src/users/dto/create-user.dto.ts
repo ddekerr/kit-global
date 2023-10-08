@@ -10,7 +10,6 @@ export class CreateUserDto {
   })
   @IsString({ message: 'User name must be a string' })
   @IsNotEmpty()
-  @Min(3)
   readonly name: string;
 
   @ApiProperty({
