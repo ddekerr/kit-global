@@ -10,7 +10,7 @@ export class Project {
   name: string;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Task' }] })
-  tasks: Task[];
+  tasks: mongoose.ObjectId[];
 }
 
 export const ProjectSchema = SchemaFactory.createForClass(Project);

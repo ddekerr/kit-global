@@ -11,7 +11,7 @@ import {
 import { ProjectsService } from './projects.service';
 import { Project } from './project.schema';
 import { ObjectId } from 'mongoose';
-import { AddTaskType } from './types';
+import { AddTaskDto } from './dto/add-task.dto';
 
 @Controller('api/projects')
 export class ProjectsController {
@@ -37,8 +37,18 @@ export class ProjectsController {
     return this.projectsService.getProjectsList();
   }
 
-  @Post(':id/add-task')
-  addTask(@Query('id') projectId: ObjectId, @Body() body: { task }) {
-    return this.projectsService.addTaskToProject(projectId, body.task);
+  @Get(':id')
+  getProject(@Param('id') id: ObjectId): Promise<Project> {
+    return this.projectsService.getProjectById(id);
+  }
+
+  @Post(':id/add-tasks')
+  addTasks(@Param('id') projectId: ObjectId, @Body() body: AddTaskDto) {
+    return this.projectsService.addTasksToProject(projectId, body);
+  }
+
+  @Post(':id/remove-tasks')
+  removeTasks(@Param('id') projectId: ObjectId, @Body() body: AddTaskDto) {
+    return this.projectsService.removeTasksFromProject(projectId, body);
   }
 }

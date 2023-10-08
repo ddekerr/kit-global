@@ -13,8 +13,8 @@ export class Task {
   @Prop({ String, default: 'New', enum: STATUS_LIST, lowercase: true })
   status: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Project' })
-  project: Project;
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }] })
+  projects: mongoose.ObjectId[];
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);

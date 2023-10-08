@@ -5,34 +5,29 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { Task } from './task.schema';
 import { Filter, Params } from './types';
 import { FILTERS } from './constants';
-import { ProjectsService } from 'src/projects/projects.service';
+// import { ProjectsService } from 'src/projects/projects.service';
 import { BadRequestException } from 'src/exceptions';
 
 @Injectable()
 export class TasksService {
   constructor(
-    @InjectModel(Task.name) private taskModel: Model<Task>,
-    private projectsService: ProjectsService,
+    @InjectModel(Task.name) private taskModel: Model<Task>, // private projectsService: ProjectsService,
   ) {}
 
   async createTask(dto: CreateTaskDto): Promise<Task> {
-    const project = await this.projectsService.getProjectById(dto.project);
-    if (!project) {
-      throw new BadRequestException('Wrong project ID');
-    }
-
     const task = await this.taskModel
       .create(dto)
-      .then((t) => t.populate('project'));
+      .then((t) => t.populate('projects'));
 
-    const projectId: ObjectId = task.project['id'];
-    await this.projectsService.addTaskToProject(projectId, task._id);
+    if (!task) {
+      throw new BadRequestException('Wrong task ID');
+    }
 
     return task;
   }
 
-  async getTaskById(id: ObjectId): Promise<Task> {
-    const task = await this.taskModel.findById(id).populate('project');
+  async getTaskById(id: ObjectId) {
+    const task = await this.taskModel.findById(id).populate('projects');
     if (!task) {
       throw new BadRequestException('Wrong task ID');
     }
@@ -44,7 +39,7 @@ export class TasksService {
     const tasks = await this.taskModel
       .find(filter)
       .sort(sort)
-      .populate('project');
+      .populate('projects');
 
     return tasks;
   }
@@ -62,20 +57,29 @@ export class TasksService {
   async removeTaskById(_id: ObjectId) {
     const task = await this.taskModel
       .findOneAndRemove({ _id })
-      .populate('project');
+      .populate('projects');
 
     if (!task) {
       throw new BadRequestException('Wrong task ID');
     }
-
-    const projectId: ObjectId = task.project['id'];
-    await this.projectsService.removeTaskFromProject(projectId, task._id);
 
     return task;
   }
 
   async removeManyTasks(filter: {}) {
     await this.taskModel.deleteMany(filter);
+  }
+
+  async addProjectToTask(taskId: ObjectId, projectId): Promise<void> {
+    const task = await this.getTaskById(taskId);
+    task.projects.push(projectId);
+    await task.save();
+  }
+
+  async removeProjectFromTask(taskId: ObjectId, projectId): Promise<void> {
+    const task = await this.getTaskById(taskId);
+    task.projects.splice(task.projects.indexOf(projectId), 1);
+    await task.save();
   }
 
   setFilter(params: Params): Filter {

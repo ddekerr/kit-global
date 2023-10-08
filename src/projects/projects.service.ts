@@ -5,6 +5,7 @@ import { Model, ObjectId } from 'mongoose';
 import { BadRequestException } from 'src/exceptions';
 
 import { Project } from './project.schema';
+import { AddTaskDto } from './dto/add-task.dto';
 
 @Injectable()
 export class ProjectsService {
@@ -25,7 +26,7 @@ export class ProjectsService {
   }
 
   async getProjectById(id: ObjectId) {
-    const project = await this.projectsModel.findById(id).populate('tasks');
+    const project = (await this.projectsModel.findById(id)).populate('tasks');
     return project;
   }
 
@@ -39,28 +40,34 @@ export class ProjectsService {
     return project;
   }
 
-  async removeProjectById(_id: ObjectId) {
-    const project = await this.projectsModel.findByIdAndRemove(_id);
+  async removeProjectById(id: ObjectId) {
+    const project = await this.projectsModel.findByIdAndRemove(id);
 
     if (!project) {
       throw new BadRequestException('Wrong project ID');
     }
 
-    await this.tasksService.removeManyTasks({ project: _id });
+    await this.tasksService.removeManyTasks({ project: id });
 
     return project;
   }
 
-  async addTaskToProject(id: ObjectId, taskId) {
+  async addTasksToProject(id: ObjectId, dto: AddTaskDto) {
     const project = await this.getProjectById(id);
-    project.tasks.push(taskId);
+    dto.tasks.forEach(async (taskId) => {
+      project.tasks.push(taskId);
+      await this.tasksService.addProjectToTask(taskId, project._id);
+    });
     await project.save();
     return project;
   }
 
-  async removeTaskFromProject(id: ObjectId, taskId) {
+  async removeTasksFromProject(id: ObjectId, dto: AddTaskDto) {
     const project = await this.getProjectById(id);
-    project.tasks.splice(project.tasks.indexOf(taskId), 1);
+    dto.tasks.forEach((taskId) =>
+      project.tasks.splice(project.tasks.indexOf(taskId), 1),
+    );
     await project.save();
+    return project;
   }
 }
