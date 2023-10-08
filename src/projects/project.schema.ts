@@ -9,7 +9,7 @@ export class Project {
   @Prop({ String, required: true })
   name: string;
 
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId }], ref: 'Task' })
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Task' }] })
   tasks: Task[];
 }
 
