@@ -13,6 +13,14 @@ This project was created using:
 $ npm install
 ```
 
+Create .env with this content:
+
+```bash
+MONGO_CONECTION=mongodb+srv://admin:admin@cluster0.tr5edqa.mongodb.net/?retryWrites=true&w=majority
+JWT_ACCESS_SECRET=JWT_ACCESS_SECRET
+JWT_REFRESH_SECRET=JWT_REFRESH_SECRET
+```
+
 ## Running the app
 
 ```bash
