@@ -6,6 +6,7 @@ import { BadRequestException } from 'src/exceptions';
 
 import { Project } from './project.schema';
 import { AddTaskDto } from './dto/add-task.dto';
+import { CreateProjectDto } from './dto/create-project.dto';
 
 @Injectable()
 export class ProjectsService {
@@ -14,32 +15,29 @@ export class ProjectsService {
     @Inject(forwardRef(() => TasksService)) private tasksService: TasksService,
   ) {}
 
-  async createProject(dto: Project): Promise<Project> {
+  // ############ CREATE ############
+  async createProject(dto: CreateProjectDto) {
     const project = await this.projectsModel.create(dto);
-    return project;
-  }
-
-  async getProjectsList() {
-    const projects = await this.projectsModel.find().populate('tasks');
-
-    return projects;
-  }
-
-  async getProjectById(id: ObjectId) {
-    const project = (await this.projectsModel.findById(id)).populate('tasks');
-    return project;
-  }
-
-  async updateProjectById(_id: ObjectId, update: {}) {
-    const project = await this.projectsModel.findByIdAndUpdate(_id, update);
 
     if (!project) {
-      throw new BadRequestException('Wrong project ID');
+      throw new BadRequestException('Wrong data');
     }
 
     return project;
   }
 
+  // ############ UPDATE ############
+  async updateProjectById(_id: ObjectId, update: {}) {
+    const project = await this.projectsModel.findByIdAndUpdate(_id, update);
+
+    if (!project) {
+      throw new BadRequestException('Wrong data or project ID');
+    }
+
+    return project;
+  }
+
+  // ############ REMOVE ############
   async removeProjectById(id: ObjectId) {
     const project = await this.projectsModel.findByIdAndRemove(id);
 
@@ -47,13 +45,35 @@ export class ProjectsService {
       throw new BadRequestException('Wrong project ID');
     }
 
-    await this.tasksService.removeManyTasks({ project: id });
-
     return project;
   }
 
+  // ############ GET LIST ############
+  async getProjectsList() {
+    const projects = await this.projectsModel.find().populate('tasks');
+    return projects;
+  }
+
+  // ############ GET ONE ############
+  async getProjectById(id: ObjectId) {
+    const project = await this.projectsModel.findById(id);
+
+    if (!project) {
+      throw new BadRequestException('Wrong project ID');
+    }
+
+    await project.populate('tasks');
+    return project;
+  }
+
+  // ############ ADD TASKS TO PROJECT ############
   async addTasksToProject(id: ObjectId, dto: AddTaskDto) {
     const project = await this.getProjectById(id);
+
+    if (!project || !dto.tasks.length) {
+      throw new BadRequestException('Wrong data or project ID');
+    }
+
     dto.tasks.forEach(async (taskId) => {
       project.tasks.push(taskId);
       await this.tasksService.addProjectToTask(taskId, project._id);
@@ -62,8 +82,14 @@ export class ProjectsService {
     return project;
   }
 
+  // ############ REMOVE TASKS FROM PROJECT ############
   async removeTasksFromProject(id: ObjectId, dto: AddTaskDto) {
     const project = await this.getProjectById(id);
+
+    if (!project || !dto.tasks.length) {
+      throw new BadRequestException('Wrong data or project ID');
+    }
+
     dto.tasks.forEach((taskId) =>
       project.tasks.splice(project.tasks.indexOf(taskId), 1),
     );

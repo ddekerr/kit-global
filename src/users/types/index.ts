@@ -9,13 +9,3 @@ export type Tokens = {
   refreshToken: string;
 };
 
-export type Token = {
-  accessToken: string;
-};
-
-export type ReturnUserType = {
-  name: string;
-  email: string;
-  accessToken: string;
-  refreshToken: string;
-};
