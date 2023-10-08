@@ -23,6 +23,8 @@ import { Project } from './project.schema';
 import { AddTaskDto } from './dto/add-task.dto';
 import { CreateProjectDto } from './dto/create-project.dto';
 
+import { ErrorType } from 'src/types';
+
 @ApiTags('Projects')
 @Controller('api/projects')
 export class ProjectsController {
@@ -34,7 +36,7 @@ export class ProjectsController {
     description: 'Project has been successfully created.',
     type: Project,
   })
-  @ApiBadRequestResponse({ description: 'Wrong data' })
+  @ApiBadRequestResponse({ description: 'Wrong data', type: ErrorType })
   create(@Body() dto: CreateProjectDto): Promise<Project> {
     return this.projectsService.createProject(dto);
   }
@@ -45,7 +47,10 @@ export class ProjectsController {
     description: 'Project has been successfully updated.',
     type: Project,
   })
-  @ApiBadRequestResponse({ description: 'Wrong data or project ID' })
+  @ApiBadRequestResponse({
+    description: 'Wrong data or project ID',
+    type: ErrorType,
+  })
   @ApiParam({ name: 'id', type: 'ObjectId', description: 'Project ID' })
   update(
     @Param('id') id: ObjectId,
@@ -60,7 +65,7 @@ export class ProjectsController {
     description: 'Project has been successfully deleted.',
     type: Project,
   })
-  @ApiBadRequestResponse({ description: 'Wrong project ID' })
+  @ApiBadRequestResponse({ description: 'Wrong project ID', type: ErrorType })
   @ApiParam({ name: 'id', type: 'ObjectId', description: 'Project ID' })
   remove(@Param('id') id: ObjectId): Promise<Project> {
     return this.projectsService.removeProjectById(id);
@@ -72,7 +77,7 @@ export class ProjectsController {
     description: 'Project has been successfully read',
     type: Project,
   })
-  @ApiBadRequestResponse({ description: 'Wrong project ID' })
+  @ApiBadRequestResponse({ description: 'Wrong project ID', type: ErrorType })
   @ApiParam({ name: 'id', type: 'ObjectId', description: 'Project ID' })
   getProject(@Param('id') id: ObjectId): Promise<Project> {
     return this.projectsService.getProjectById(id);
@@ -94,7 +99,10 @@ export class ProjectsController {
     description: 'Tasks have been successfully added',
     type: Project,
   })
-  @ApiBadRequestResponse({ description: 'Wrong data or project ID' })
+  @ApiBadRequestResponse({
+    description: 'Wrong data or project ID',
+    type: ErrorType,
+  })
   @ApiParam({ name: 'id', type: 'ObjectId', description: 'Project ID' })
   addTasks(@Param('id') projectId: ObjectId, @Body() body: AddTaskDto) {
     return this.projectsService.addTasksToProject(projectId, body);
@@ -106,7 +114,10 @@ export class ProjectsController {
     description: 'Tasks have been successfully deleted',
     type: Project,
   })
-  @ApiBadRequestResponse({ description: 'Wrong data or project ID' })
+  @ApiBadRequestResponse({
+    description: 'Wrong data or project ID',
+    type: ErrorType,
+  })
   @ApiParam({ name: 'id', type: 'ObjectId', description: 'Project ID' })
   removeTasks(@Param('id') projectId: ObjectId, @Body() body: AddTaskDto) {
     return this.projectsService.removeTasksFromProject(projectId, body);

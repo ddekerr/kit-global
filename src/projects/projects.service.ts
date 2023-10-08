@@ -1,12 +1,14 @@
-import { TasksService } from 'src/tasks/tasks.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { Model, ObjectId } from 'mongoose';
+
 import { BadRequestException } from 'src/exceptions';
 
+import { TasksService } from 'src/tasks/tasks.service';
 import { Project } from './project.schema';
-import { AddTaskDto } from './dto/add-task.dto';
+
 import { CreateProjectDto } from './dto/create-project.dto';
+import { AddTaskDto } from './dto/add-task.dto';
 
 @Injectable()
 export class ProjectsService {

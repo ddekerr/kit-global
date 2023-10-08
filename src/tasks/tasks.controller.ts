@@ -25,6 +25,7 @@ import { Task } from './task.schema';
 import { CreateTaskDto } from './dto/create-task.dto';
 
 import { Params } from './types';
+import { ErrorType } from './../types/index';
 
 @ApiTags('Tasks')
 @Controller('api/tasks')
@@ -37,7 +38,7 @@ export class TasksController {
     description: 'Task has been successfully created.',
     type: Task,
   })
-  @ApiBadRequestResponse({ description: 'Wrong data' })
+  @ApiBadRequestResponse({ description: 'Wrong data', type: ErrorType })
   create(@Body() dto: CreateTaskDto): Promise<Task> {
     return this.tasksService.createTask(dto);
   }
@@ -48,7 +49,10 @@ export class TasksController {
     description: 'Task has been successfully updated.',
     type: Task,
   })
-  @ApiBadRequestResponse({ description: 'Wrong data or task ID' })
+  @ApiBadRequestResponse({
+    description: 'Wrong data or task ID',
+    type: ErrorType,
+  })
   @ApiParam({ name: 'id', type: 'ObjectId', description: 'Task ID' })
   update(@Param('id') id: ObjectId, @Body() dto: CreateTaskDto): Promise<Task> {
     return this.tasksService.updateTaskById(id, dto);
@@ -60,7 +64,7 @@ export class TasksController {
     description: 'Task has been successfully deleted.',
     type: Task,
   })
-  @ApiBadRequestResponse({ description: 'Wrong task ID' })
+  @ApiBadRequestResponse({ description: 'Wrong task ID', type: ErrorType })
   @ApiParam({ name: 'id', type: 'ObjectId', description: 'Task ID' })
   remove(@Param('id') id: ObjectId): Promise<Task> {
     return this.tasksService.removeTaskById(id);
@@ -72,7 +76,7 @@ export class TasksController {
     description: 'Task has been successfully read',
     type: Task,
   })
-  @ApiBadRequestResponse({ description: 'Wrong task ID' })
+  @ApiBadRequestResponse({ description: 'Wrong task ID', type: ErrorType })
   @ApiParam({ name: 'id', type: 'ObjectId', description: 'Task ID' })
   getTask(@Param('id') id: ObjectId): Promise<Task> {
     return this.tasksService.getTaskById(id);
@@ -84,7 +88,7 @@ export class TasksController {
     description: 'Tasks list has been successfully read',
     type: [Task],
   })
-  @ApiBadRequestResponse({ description: 'Wrong query params' })
+  @ApiBadRequestResponse({ description: 'Wrong query params', type: ErrorType })
   @ApiQuery({
     name: 'date',
     type: Date,
