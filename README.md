@@ -36,4 +36,7 @@ $ npm run start:prod
 
 ### Read docs [here](http://localhost:3000/api/docs)
 
-### Test all routes in [Postman](https://api.postman.com/collections/3985491-cab7c515-4fc1-4cda-ac27-cc2ddc9a5c53?access_key=PMAT-01HC8H3RF40FPMXAAT2B9MMGQ5)
+### Import this URL in Postman for checking all routes
+```bash
+https://api.postman.com/collections/3985491-cab7c515-4fc1-4cda-ac27-cc2ddc9a5c53?access_key=PMAT-01HC8H3RF40FPMXAAT2B9MMGQ5
+```
